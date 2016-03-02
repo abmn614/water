@@ -4,7 +4,6 @@ date_default_timezone_set('PRC');
 $GLOBALS = require(BASE_DIR . 'Water/config.php');
 require(BASE_DIR . 'Water/functions.php');
 
-
 if (DEBUG) {
 	ini_set('display_errors', 'on');
 	error_reporting(E_ALL);
@@ -15,7 +14,6 @@ if (DEBUG) {
 
 require('Controller.php');
 require('Model.php');
-
 
 $controller_name = 'Index';
 $action_name = 'actionIndex';
@@ -62,9 +60,8 @@ try {
 	}
 }
 
-
 /* 实例化对象 */
-function obj($class_name, $file_path = ''){
+function obj($class_name, $file_path = '', $param = array()){
 	$file_exists = false;
 
 	if (!preg_match('/^[a-z0-9_]+$/i', $class_name))
@@ -91,6 +88,6 @@ function obj($class_name, $file_path = ''){
 	if($file_exists == false) throw new Exception($class_name . "($file)类文件不存在");
 	require_once($file);
 	if(!class_exists($class_name)) throw new Exception($class_name . "($file)类不存在");
-	$obj[$class_name] = new $class_name();
+	$obj[$class_name] = new $class_name($param);
 	return $obj[$class_name];
 }

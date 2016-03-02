@@ -17,16 +17,14 @@ Class Controller {
 		$smarty->cache_dir = C('CACHE_DIR');
 		$smarty->left_delimiter = C('LEFT_DELIMITER');
 		$smarty->right_delimiter = C('RIGHT_DELIMITER');
-
 		return $smarty;
 	}
 
 	function display($tmp_name){
-
+		$smarty = $this->smarty();
 		$tmp_suffix = C('TEMPLATE_SUFFIX');
-		// $this->smarty()->assign(get_object_vars($this));
-		// $this->smarty()->assign($this->_data);
-		$this->smarty()->assign('a', '123');
-		$this->smarty()->display($tmp_name . $tmp_suffix);
+		$smarty->assign(get_object_vars($this));
+		$smarty->assign($this->_data);
+		$smarty->display($tmp_name . $tmp_suffix);
 	}
 }
