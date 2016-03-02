@@ -1,1 +1,3 @@
-{{$a}}
+{{ foreach $rsts as $rst }}
+	<p>{{ $rst.name }} ===> {{ $rst.age }}</p>
+{{ /foreach }}
