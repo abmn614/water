@@ -4,14 +4,6 @@ date_default_timezone_set('PRC');
 $GLOBALS = require(BASE_DIR . 'Water/config.php');
 require(BASE_DIR . 'Water/functions.php');
 
-if (DEBUG) {
-	ini_set('display_errors', 'on');
-	error_reporting(E_ALL);
-} else {
-	ini_set('display_errors', 'off');
-	ini_set('log_errors', 'on');
-}
-
 require('Controller.php');
 require('Model.php');
 
@@ -33,7 +25,11 @@ if (REWRITE) {
 				$_REQUEST['r'] = $v;
 				break;
 			}
-		}	
+		}
+		if (!isset($_REQUEST['r'])) {
+			header('HTTP/1.1 404 NOT FOUND');
+			exit("404 NOT FOUND");
+		}
 	}
 }
 
@@ -43,22 +39,8 @@ if (isset($_REQUEST['r'])) {
 	isset($route_arr[1]) && $action_name = 'action' . ucfirst(strtolower($route_arr[1]));
 }
 
-try {
 	$obj = obj($controller_name.'Controller');
-	if(!method_exists($obj, $action_name)) throw new Exception($action_name.'方法不存在');
 	$obj->$action_name();
-} catch (Exception $e) {
-	$message = 'Throws error: '.$e->getMessage().' in '.$e->getFile().' on line '.$e->getLine() . "\r\n";
-	$error_log_path = C('ERROR_LOG_PATH');
-	if(DEBUG){
-		echo $message;
-		echo "<pre>";
-		print_r($e);
-		echo "</pre>";
-	}else{
-		error_log($message, 3, $error_log_path);
-	}
-}
 
 /* 实例化对象 */
 function obj($class_name, $file_path = '', $param = array()){
@@ -85,9 +67,7 @@ function obj($class_name, $file_path = '', $param = array()){
 		}
 	}
 
-	if($file_exists == false) throw new Exception($class_name . "($file)类文件不存在");
 	require_once($file);
-	if(!class_exists($class_name)) throw new Exception($class_name . "($file)类不存在");
 	$obj[$class_name] = new $class_name($param);
 	return $obj[$class_name];
 }

@@ -21,12 +21,11 @@
 //     );
 // $insert = $db->insert($data);
 // $data = array(
-//     'user' => 'dlm',
+//     'user' => 'water',
 //     'age'   => 24,
 //     );
 // $update = $db->where('id<10')->update($data);
 // $del = $db->where('id>0 and id< 6')->delete();
-
 
 Class Model{   
     public $con = NULL; // pdo对象
@@ -39,7 +38,7 @@ Class Model{
 /* 构造函数 */
     function __construct($config){
         try {
-            $this->con = new PDO("{$config['db']['type']}:host={$config['db']['host']};dbname={$config['db']['dbname']};port={$config['db']['port']};", "{$config['db']['username']}", "{$config['db']['password']}", array(PDO::ATTR_PERSISTENT => true, PDO::MYSQL_ATTR_INIT_COMMAND => "SET NAMES `{$config['db']['names']}`"));
+            $this->con = new PDO("{$config['db']['type']}:host={$config['db']['host']};dbname={$config['db']['dbname']};port={$config['db']['port']};", "{$config['db']['username']}", "{$config['db']['password']}", array(PDO::ATTR_PERSISTENT => true, PDO::MYSQL_ATTR_INIT_COMMAND => "SET NAMES `{$config['db']['names']}`", PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION ));
         } catch (PDOException $e) {
             echo "Error : " . $e->getMessage() . '<br />';
             die("{$config['db']['type']}数据库连接失败");
@@ -74,7 +73,7 @@ Class Model{
         $sql = "SELECT {$fields} FROM {$this->tab} {$this->where} {$this->order} {$this->limit}";
         // 清除，以免影响其他定义
         $this->where = $this->order = $this->limit = '';
-        return $this->querySql($sql);
+        return $this->query($sql);
     }
 /* INSERT 增加 */
     function insert($data){
@@ -102,7 +101,7 @@ Class Model{
         $sets = rtrim($sets, ',');
         $sql = "UPDATE {$this->tab} SET {$sets} {$this->where}";
         $this->where = '';
-        return $this->exeSql($sql);
+        return $this->execute($sql);
     }
 /* DELETE 删除 */
     function delete(){
@@ -113,12 +112,12 @@ Class Model{
         // 只支持单条删除        
         $sql = "DELETE FROM {$this->tab} {$this->where}";
         $this->where = '';
-        return $this->exeSql($sql);
+        return $this->execute($sql);
     }
 /* COUNT 查询总条数 */
     function count(){
         $sql = "SELECT COUNT(*) AS count FROM {$this->tab} {$this->where}";
-        $count_arr = $this->querySql($sql);
+        $count_arr = $this->query($sql);
         $this->where = '';
         return $count_arr[0]['count'];
     }
