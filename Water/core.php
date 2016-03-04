@@ -39,8 +39,8 @@ if (isset($_REQUEST['r'])) {
 	isset($route_arr[1]) && $action_name = 'action' . ucfirst(strtolower($route_arr[1]));
 }
 
-	$obj = obj($controller_name.'Controller');
-	$obj->$action_name();
+$obj = obj($controller_name.'Controller');
+$obj->$action_name();
 
 /* 实例化对象 */
 function obj($class_name, $file_path = '', $param = array()){

@@ -48,6 +48,24 @@ function appException($e){
 	}
 }
 
+/* 列出所有目录 */
+function ListDir($path = './'){
+    $data = array();
+    $current_dir = opendir($path);
+    while(($file = readdir($current_dir)) != false) {
+        $sub_dir = $path. DIRECTORY_SEPARATOR . $file;
+        if($file == '.' || $file == '..' || $file[0] == '.'){
+            continue;
+        }elseif(is_dir($sub_dir)){
+            $data[] = $file;
+            $data = array_merge($data, ListDir($sub_dir));
+        }elseif(is_file($sub_dir)){
+            $data[] =  $file;     
+        }
+    }
+    return $data;
+}
+
 
 function C($key){
 	return $GLOBALS[$key];
